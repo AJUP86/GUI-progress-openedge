@@ -102,7 +102,7 @@ ttCustomer.Name ttCustomer.Comments
 
 /* Standard List Definitions                                            */
 &Scoped-Define ENABLED-OBJECTS brCustomers fiCustNum fiCustName fiComment ~
-orders-btn fiRepName 
+orders-btn BUTTON-3 fiRepName 
 &Scoped-Define DISPLAYED-OBJECTS fiCustNum fiCustName fiComment fiRepName 
 
 /* Custom List Definitions                                              */
@@ -131,6 +131,10 @@ DEFINE MENU MENU-BAR-C-Win MENUBAR
 
 
 /* Definitions of the field level widgets                               */
+DEFINE BUTTON BUTTON-3 
+     LABEL "Button 3" 
+     SIZE 15 BY 1.13.
+
 DEFINE BUTTON orders-btn 
      LABEL "Orders" 
      SIZE 15 BY 1.13.
@@ -178,6 +182,7 @@ DEFINE FRAME DEFAULT-FRAME
      fiCustName AT ROW 15.87 COL 16 COLON-ALIGNED NO-LABEL WIDGET-ID 4
      fiComment AT ROW 15.87 COL 47 COLON-ALIGNED NO-LABEL WIDGET-ID 6
      orders-btn AT ROW 18.44 COL 87 WIDGET-ID 8
+     BUTTON-3 AT ROW 18.69 COL 26 WIDGET-ID 16
      fiRepName AT ROW 17.92 COL 11 COLON-ALIGNED WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
@@ -594,7 +599,8 @@ PROCEDURE enable_UI :
 ------------------------------------------------------------------------------*/
   DISPLAY fiCustNum fiCustName fiComment fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
-  ENABLE brCustomers fiCustNum fiCustName fiComment orders-btn fiRepName 
+  ENABLE brCustomers fiCustNum fiCustName fiComment orders-btn BUTTON-3 
+         fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
   {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
   VIEW C-Win.
