@@ -102,7 +102,7 @@ ttCustomer.Name ttCustomer.Comments
 
 /* Standard List Definitions                                            */
 &Scoped-Define ENABLED-OBJECTS brCustomers fiCustNum fiCustName fiComment ~
-BUTTON-2 orders-btn fiRepName 
+orders-btn fiRepName 
 &Scoped-Define DISPLAYED-OBJECTS fiCustNum fiCustName fiComment fiRepName 
 
 /* Custom List Definitions                                              */
@@ -131,10 +131,6 @@ DEFINE MENU MENU-BAR-C-Win MENUBAR
 
 
 /* Definitions of the field level widgets                               */
-DEFINE BUTTON BUTTON-2 
-     LABEL "test" 
-     SIZE 15 BY 1.13.
-
 DEFINE BUTTON orders-btn 
      LABEL "Orders" 
      SIZE 15 BY 1.13.
@@ -181,7 +177,6 @@ DEFINE FRAME DEFAULT-FRAME
      fiCustNum AT ROW 15.87 COL 4 COLON-ALIGNED NO-LABEL WIDGET-ID 2
      fiCustName AT ROW 15.87 COL 16 COLON-ALIGNED NO-LABEL WIDGET-ID 4
      fiComment AT ROW 15.87 COL 47 COLON-ALIGNED NO-LABEL WIDGET-ID 6
-     BUTTON-2 AT ROW 18.18 COL 21 WIDGET-ID 14
      orders-btn AT ROW 18.44 COL 87 WIDGET-ID 8
      fiRepName AT ROW 17.92 COL 11 COLON-ALIGNED WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
@@ -402,17 +397,6 @@ do:
 &ANALYZE-RESUME
 
 
-&Scoped-define SELF-NAME BUTTON-2
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL BUTTON-2 C-Win
-ON choose OF BUTTON-2 IN FRAME DEFAULT-FRAME /* test */
-do:
-run getNextCustomer.  
-end.
-
-/* _UIB-CODE-BLOCK-END */
-&ANALYZE-RESUME
-
-
 &Scoped-define SELF-NAME fiComment
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL fiComment C-Win
 ON value-changed OF fiComment IN FRAME DEFAULT-FRAME
@@ -610,8 +594,7 @@ PROCEDURE enable_UI :
 ------------------------------------------------------------------------------*/
   DISPLAY fiCustNum fiCustName fiComment fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
-  ENABLE brCustomers fiCustNum fiCustName fiComment BUTTON-2 orders-btn 
-         fiRepName 
+  ENABLE brCustomers fiCustNum fiCustName fiComment orders-btn fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
   {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
   VIEW C-Win.
