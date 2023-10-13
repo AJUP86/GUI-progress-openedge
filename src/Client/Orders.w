@@ -7,9 +7,8 @@
 
 
 /* Temp-Table and Buffer definitions                                    */
-define temp-table ttOrder no-undo like Order
-    field rowIdent as rowid 
-    index rowIdent rowIdent.
+DEFINE TEMP-TABLE ttOrder NO-UNDO LIKE Order
+       field rowIdent as rowid index rowIdent rowIdent.
 
 
 
@@ -46,11 +45,7 @@ create widget-pool.
 subscribe to "Shutdown":U anywhere.
 /* Parameters Definitions ---                                           */
 define input  parameter            phProcLib       as handle      no-undo.
-//define input  parameter            prowOrderRow    as rowid       no-undo.
-//define input  parameter            iOrderNum       as integer     no-undo.            
-//define output parameter table for  ttOrder.
-/* Local Variable Definitions ---                                       */
-define variable ghDataUtil as handle        no-undo.
+define input  parameter            ghDataUtil      as handle      no-undo.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -98,27 +93,27 @@ ttOrder.OrderStatus
 /* ***********************  Control Definitions  ********************** */
 
 /* Define the widget handle for the window                              */
-define var      C-Win      as widget-handle no-undo.
+DEFINE VAR C-Win AS WIDGET-HANDLE NO-UNDO.
 
 /* Definitions of the field level widgets                               */
-define button BtnDone default 
-    label "&Done" 
-    size 15 by 1.13
-    bgcolor 8 .
+DEFINE BUTTON BtnDone DEFAULT 
+     LABEL "&Done" 
+     SIZE 15 BY 1.13
+     BGCOLOR 8 .
 
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
-define query BrOrders for 
-    ttOrder scrolling.
+DEFINE QUERY BrOrders FOR 
+      ttOrder SCROLLING.
 &ANALYZE-RESUME
 
 /* Browse definitions                                                   */
-define browse BrOrders
+DEFINE BROWSE BrOrders
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _DISPLAY-FIELDS BrOrders C-Win _STRUCTURED
-    query BrOrders no-lock display
-    ttOrder.Ordernum format "zzzzzzzzz9":U width 13.6
-    ttOrder.OrderDate format "99/99/99":U width 11.6
-    ttOrder.OrderStatus format "x(20)":U
+  QUERY BrOrders NO-LOCK DISPLAY
+      ttOrder.Ordernum FORMAT "zzzzzzzzz9":U WIDTH 13.6
+      ttOrder.OrderDate FORMAT "99/99/99":U WIDTH 11.6
+      ttOrder.OrderStatus FORMAT "x(20)":U
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
     WITH NO-ROW-MARKERS SEPARATORS SIZE 73 BY 10.51 ROW-HEIGHT-CHARS .64 FIT-LAST-COLUMN.
@@ -126,14 +121,14 @@ define browse BrOrders
 
 /* ************************  Frame Definitions  *********************** */
 
-define frame DEFAULT-FRAME
-    BrOrders at row 1.51 col 5 widget-id 200
-    BtnDone at row 12.8 col 63 widget-id 2
-    with 1 down no-box keep-tab-order overlay 
-    side-labels no-underline three-d 
-    at col 1 row 1
-    size 80 by 13.23
-    default-button BtnDone widget-id 100.
+DEFINE FRAME DEFAULT-FRAME
+     BrOrders AT ROW 1.51 COL 5 WIDGET-ID 200
+     BtnDone AT ROW 12.8 COL 63 WIDGET-ID 2
+    WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
+         SIDE-LABELS NO-UNDERLINE THREE-D 
+         AT COL 1 ROW 1
+         SIZE 80 BY 13.23
+         DEFAULT-BUTTON BtnDone WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -155,26 +150,26 @@ define frame DEFAULT-FRAME
 /* *************************  Create Window  ************************** */
 
 &ANALYZE-SUSPEND _CREATE-WINDOW
-if session:display-type = "GUI":U then
-    create window C-Win assign
-        hidden             = yes
-        title              = "Orders"
-        height             = 13.23
-        width              = 80
-        max-height         = 16
-        max-width          = 80
-        virtual-height     = 16
-        virtual-width      = 80
-        resize             = yes
-        scroll-bars        = no
-        status-area        = no
-        bgcolor            = ?
-        fgcolor            = ?
-        keep-frame-z-order = yes
-        three-d            = yes
-        message-area       = no
-        sensitive          = yes.
-else {&WINDOW-NAME} = current-window.
+IF SESSION:DISPLAY-TYPE = "GUI":U THEN
+  CREATE WINDOW C-Win ASSIGN
+         HIDDEN             = YES
+         TITLE              = "Orders"
+         HEIGHT             = 13.23
+         WIDTH              = 80
+         MAX-HEIGHT         = 16
+         MAX-WIDTH          = 80
+         VIRTUAL-HEIGHT     = 16
+         VIRTUAL-WIDTH      = 80
+         RESIZE             = yes
+         SCROLL-BARS        = no
+         STATUS-AREA        = no
+         BGCOLOR            = ?
+         FGCOLOR            = ?
+         KEEP-FRAME-Z-ORDER = yes
+         THREE-D            = yes
+         MESSAGE-AREA       = no
+         SENSITIVE          = yes.
+ELSE {&WINDOW-NAME} = CURRENT-WINDOW.
 /* END WINDOW DEFINITION                                                */
 &ANALYZE-RESUME
 
@@ -188,8 +183,8 @@ else {&WINDOW-NAME} = current-window.
 /* SETTINGS FOR FRAME DEFAULT-FRAME
    FRAME-NAME                                                           */
 /* BROWSE-TAB BrOrders 1 DEFAULT-FRAME */
-if session:display-type = "GUI":U and VALID-HANDLE(C-Win)
-    then C-Win:hidden = no.
+IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
+THEN C-Win:HIDDEN = no.
 
 /* _RUN-TIME-ATTRIBUTES-END */
 &ANALYZE-RESUME
@@ -218,8 +213,8 @@ if session:display-type = "GUI":U and VALID-HANDLE(C-Win)
 
 &Scoped-define SELF-NAME C-Win
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL C-Win C-Win
-on end-error of C-Win /* Orders */
-    or endkey of {&WINDOW-NAME} anywhere 
+ON end-error OF C-Win /* Orders */
+or endkey of {&WINDOW-NAME} anywhere 
     do:
         /* This case occurs when the user presses the "Esc" key.
            In a persistently run window, just ignore this.  If we did not, the
@@ -232,8 +227,8 @@ on end-error of C-Win /* Orders */
 
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL C-Win C-Win
-on window-close of C-Win /* Orders */
-    do:
+ON window-close OF C-Win /* Orders */
+do:
         /* This event will close the window and terminate the procedure.  */
         apply "CLOSE":U to this-procedure.
         return no-apply.
@@ -245,8 +240,8 @@ on window-close of C-Win /* Orders */
 
 &Scoped-define SELF-NAME BtnDone
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL BtnDone C-Win
-on choose of BtnDone in frame DEFAULT-FRAME /* Done */
-    do:
+ON choose OF BtnDone IN FRAME DEFAULT-FRAME /* Done */
+do:
   &IF "{&PROCEDURE-TYPE}" EQ "SmartPanel" &THEN
     &IF "{&ADM-VERSION}" EQ "ADM1.1" &THEN
       RUN dispatch IN THIS-PROCEDURE ('exit').
@@ -287,7 +282,6 @@ pause 0 before-hide.
 MAIN-BLOCK:
 do on error   undo MAIN-BLOCK, leave MAIN-BLOCK
     on end-key undo MAIN-BLOCK, leave MAIN-BLOCK:
-    run InitializeObjects.
     if not this-procedure:persistent then
         wait-for close of this-procedure.
 end.
@@ -299,51 +293,51 @@ end.
 /* **********************  Internal Procedures  *********************** */
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE disable_UI C-Win  _DEFAULT-DISABLE
-procedure disable_UI :
-    /*------------------------------------------------------------------------------
-      Purpose:     DISABLE the User Interface
-      Parameters:  <none>
-      Notes:       Here we clean-up the user-interface by deleting
-                   dynamic widgets we have created and/or hide 
-                   frames.  This procedure is usually called when
-                   we are ready to "clean-up" after running.
-    ------------------------------------------------------------------------------*/
-    /* Delete the WINDOW we created */
-    if session:display-type = "GUI":U and VALID-HANDLE(C-Win)
-        then delete widget C-Win.
-    if this-procedure:persistent then delete procedure this-procedure.
-end procedure.
+PROCEDURE disable_UI :
+/*------------------------------------------------------------------------------
+  Purpose:     DISABLE the User Interface
+  Parameters:  <none>
+  Notes:       Here we clean-up the user-interface by deleting
+               dynamic widgets we have created and/or hide 
+               frames.  This procedure is usually called when
+               we are ready to "clean-up" after running.
+------------------------------------------------------------------------------*/
+  /* Delete the WINDOW we created */
+  IF SESSION:DISPLAY-TYPE = "GUI":U AND VALID-HANDLE(C-Win)
+  THEN DELETE WIDGET C-Win.
+  IF THIS-PROCEDURE:PERSISTENT THEN DELETE PROCEDURE THIS-PROCEDURE.
+END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE enable_UI C-Win  _DEFAULT-ENABLE
-procedure enable_UI :
-    /*------------------------------------------------------------------------------
-      Purpose:     ENABLE the User Interface
-      Parameters:  <none>
-      Notes:       Here we display/view/enable the widgets in the
-                   user-interface.  In addition, OPEN all queries
-                   associated with each FRAME and BROWSE.
-                   These statements here are based on the "Other 
-                   Settings" section of the widget Property Sheets.
-    ------------------------------------------------------------------------------*/
-    enable BrOrders BtnDone 
-        with frame DEFAULT-FRAME in window C-Win.
-    {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
-    view C-Win.
-end procedure.
+PROCEDURE enable_UI :
+/*------------------------------------------------------------------------------
+  Purpose:     ENABLE the User Interface
+  Parameters:  <none>
+  Notes:       Here we display/view/enable the widgets in the
+               user-interface.  In addition, OPEN all queries
+               associated with each FRAME and BROWSE.
+               These statements here are based on the "Other 
+               Settings" section of the widget Property Sheets.
+------------------------------------------------------------------------------*/
+  ENABLE BrOrders BtnDone 
+      WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
+  {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
+  VIEW C-Win.
+END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE InitializeObjects C-Win 
-procedure InitializeObjects :
-    /*------------------------------------------------------------------------------
+PROCEDURE InitializeObjects :
+/*------------------------------------------------------------------------------
              Purpose:
              Notes:
             ------------------------------------------------------------------------------*/
-    ghDataUtil = dynamic-function('RunPersistent' in phProcLib, "DataUtil.p").
+   
 
 end procedure.
 
@@ -351,8 +345,8 @@ end procedure.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE ReopenQuery C-Win 
-procedure ReopenQuery :
-    /*------------------------------------------------------------------------------
+PROCEDURE ReopenQuery :
+/*------------------------------------------------------------------------------
          Purpose:
          Notes:
         ------------------------------------------------------------------------------*/
@@ -364,9 +358,8 @@ end procedure.
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-
-&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE Shutdown C-Win
-procedure Shutdown private:
+&ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE Shutdown C-Win 
+PROCEDURE Shutdown PRIVATE :
 /*------------------------------------------------------------------------------
  Purpose:
  Notes:
@@ -374,22 +367,22 @@ procedure Shutdown private:
 apply "close" to this-procedure.
 
 end procedure.
-    
+
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
-
-
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE ValueChanged C-Win 
-procedure ValueChanged :
-    /*------------------------------------------------------------------------------
+PROCEDURE ValueChanged :
+/*------------------------------------------------------------------------------
          Purpose:
          Notes:
         ------------------------------------------------------------------------------*/
     define input parameter icustNum as integer no-undo.
+    define input  parameter CustName as character no-undo.
     run GetOrderData in ghDataUtil (output TABLE ttOrder, input icustNum).
     run ReopenQuery.
     run enable_ui. 
+    {&WINDOW-NAME}:title = CustName.
 end procedure.
 
 /* _UIB-CODE-BLOCK-END */

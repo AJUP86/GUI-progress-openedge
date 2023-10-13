@@ -102,7 +102,7 @@ ttCustomer.Name ttCustomer.Comments
 
 /* Standard List Definitions                                            */
 &Scoped-Define ENABLED-OBJECTS brCustomers fiCustNum fiCustName fiComment ~
-orders-btn BUTTON-3 fiRepName 
+orders-btn fiRepName 
 &Scoped-Define DISPLAYED-OBJECTS fiCustNum fiCustName fiComment fiRepName 
 
 /* Custom List Definitions                                              */
@@ -131,10 +131,6 @@ DEFINE MENU MENU-BAR-C-Win MENUBAR
 
 
 /* Definitions of the field level widgets                               */
-DEFINE BUTTON BUTTON-3 
-     LABEL "Button 3" 
-     SIZE 15 BY 1.13.
-
 DEFINE BUTTON orders-btn 
      LABEL "Orders" 
      SIZE 15 BY 1.13.
@@ -182,7 +178,6 @@ DEFINE FRAME DEFAULT-FRAME
      fiCustName AT ROW 15.87 COL 16 COLON-ALIGNED NO-LABEL WIDGET-ID 4
      fiComment AT ROW 15.87 COL 47 COLON-ALIGNED NO-LABEL WIDGET-ID 6
      orders-btn AT ROW 18.44 COL 87 WIDGET-ID 8
-     BUTTON-3 AT ROW 18.69 COL 26 WIDGET-ID 16
      fiRepName AT ROW 17.92 COL 11 COLON-ALIGNED WIDGET-ID 12
     WITH 1 DOWN NO-BOX KEEP-TAB-ORDER OVERLAY 
          SIDE-LABELS NO-UNDERLINE THREE-D 
@@ -388,7 +383,7 @@ do:
         if not available ttCustomer then return.
 
         if valid-handle( ghDetails ) then run ValueChanged in ghDetails ( ttcustomer.RowIdent ). 
-        if valid-handle (ghOrder) then run ValueChanged in ghOrder (ttCustomer.CustNum).
+        if valid-handle (ghOrder) then run ValueChanged in ghOrder (ttCustomer.CustNum, ttCustomer.Name).
         assign 
             fiRepName = "No Customer.".
         if ttCustomer.SalesRep <> "" then run GetRepData in ghDataUtil (output repName, input ttcustomer.SalesRep).
@@ -475,8 +470,6 @@ on choose of menu-item m_Modify in sub-menu m_Customer
         do:
             find first ttCustomerUpd.                    /* Make returned record available */
             buffer-copy ttCustomerUpd to ttCustomer.      /* Update local record */    
-            debugger:initiate ().
-            debugger:set-break ().   
             run ReopenQuery(rowid(ttCustomer)).                             /* Reopen Query */
         end.
     end.
@@ -517,8 +510,8 @@ do:
     
         if not valid-handle(ghOrder) then 
         do:
-            run Orders.w persistent set ghOrder( input ghProcLib  ). 
-            run valuechanged in ghOrder( ttCustomer.CustNum  ). 
+            run Orders.w persistent set ghOrder( input ghProcLib , input ghDataUtil ). 
+            run valuechanged in ghOrder( ttCustomer.CustNum, ttCustomer.Name ). 
         end.    
     end.
 
@@ -599,8 +592,7 @@ PROCEDURE enable_UI :
 ------------------------------------------------------------------------------*/
   DISPLAY fiCustNum fiCustName fiComment fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
-  ENABLE brCustomers fiCustNum fiCustName fiComment orders-btn BUTTON-3 
-         fiRepName 
+  ENABLE brCustomers fiCustNum fiCustName fiComment orders-btn fiRepName 
       WITH FRAME DEFAULT-FRAME IN WINDOW C-Win.
   {&OPEN-BROWSERS-IN-QUERY-DEFAULT-FRAME}
   VIEW C-Win.
@@ -667,7 +659,7 @@ PROCEDURE getNextCustomer :
         ------------------------------------------------------------------------------*/
     if available ttCustomer then 
         
-        browse brCustomers:select-next-row () no-error. 
+    apply "cursor-down" to browse {&BROWSE-NAME}.
     apply "value-changed" to brCustomers in frame {&frame-name}.
 
 end procedure.

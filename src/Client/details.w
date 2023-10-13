@@ -586,6 +586,7 @@ PROCEDURE ValueChanged :
         input prowCustRow ).
 
     run enable_UI.
+   {&WINDOW-NAME}:title = ttCustomer.Name.
 end procedure.
 
 /* _UIB-CODE-BLOCK-END */
