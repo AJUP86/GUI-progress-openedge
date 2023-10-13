@@ -383,7 +383,7 @@ do:
         if not available ttCustomer then return.
 
         if valid-handle( ghDetails ) then run ValueChanged in ghDetails ( ttcustomer.RowIdent ). 
-        if valid-handle (ghOrder) then run ValueChanged in ghOrder (ttCustomer.CustNum).
+        if valid-handle (ghOrder) then run ValueChanged in ghOrder (ttCustomer.CustNum, ttCustomer.Name).
         assign 
             fiRepName = "No Customer.".
         if ttCustomer.SalesRep <> "" then run GetRepData in ghDataUtil (output repName, input ttcustomer.SalesRep).
@@ -470,8 +470,6 @@ on choose of menu-item m_Modify in sub-menu m_Customer
         do:
             find first ttCustomerUpd.                    /* Make returned record available */
             buffer-copy ttCustomerUpd to ttCustomer.      /* Update local record */    
-            debugger:initiate ().
-            debugger:set-break ().   
             run ReopenQuery(rowid(ttCustomer)).                             /* Reopen Query */
         end.
     end.
@@ -512,8 +510,8 @@ do:
     
         if not valid-handle(ghOrder) then 
         do:
-            run Orders.w persistent set ghOrder( input ghProcLib  ). 
-            run valuechanged in ghOrder( ttCustomer.CustNum  ). 
+            run Orders.w persistent set ghOrder( input ghProcLib , input ghDataUtil ). 
+            run valuechanged in ghOrder( ttCustomer.CustNum, ttCustomer.Name ). 
         end.    
     end.
 
@@ -661,7 +659,7 @@ PROCEDURE getNextCustomer :
         ------------------------------------------------------------------------------*/
     if available ttCustomer then 
         
-        browse brCustomers:select-next-row () no-error. 
+    apply "cursor-down" to browse {&BROWSE-NAME}.
     apply "value-changed" to brCustomers in frame {&frame-name}.
 
 end procedure.

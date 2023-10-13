@@ -123,7 +123,7 @@ FUNCTION CapitalizeFirstLetter returns character
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD FormatPhone Dialog-Frame 
 FUNCTION FormatPhone returns character
-    ( inputPhone as character ) FORWARD.
+    ( hField as handle ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -137,7 +137,7 @@ FUNCTION FormattedCountry returns character
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidateEmail Dialog-Frame 
 FUNCTION ValidateEmail returns character
-    ( input email as character, input labelEmail as character) FORWARD.
+    ( input hEmail as handle) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -151,7 +151,7 @@ FUNCTION ValidatePostalCode returns character
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidateTextFields Dialog-Frame 
 FUNCTION ValidateTextFields returns character
-    ( input rawInput as character, input fieldLabel as character, input hCountry as handle ) FORWARD.
+    ( input hRawInput as handle, input hCountry as handle ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -183,8 +183,8 @@ DEFINE QUERY Dialog-Frame FOR
 DEFINE FRAME Dialog-Frame
      ttCustomerUpd.Contact AT ROW 2.03 COL 64 COLON-ALIGNED WIDGET-ID 12
           VIEW-AS FILL-IN 
-          SIZE 22 BY 1
-     Btn_Save AT ROW 2.03 COL 91
+          SIZE 22 BY 1 NO-TAB-STOP 
+     Btn_Save AT ROW 2.03 COL 91 NO-TAB-STOP 
      ttCustomerUpd.Name AT ROW 3.31 COL 14 COLON-ALIGNED WIDGET-ID 24
           VIEW-AS FILL-IN 
           SIZE 31.2 BY 1
@@ -424,6 +424,7 @@ do on error   undo MAIN-BLOCK, leave MAIN-BLOCK
     on end-key undo MAIN-BLOCK, leave MAIN-BLOCK:
     run InitializeObjects.     
     run enable_UI.
+    frame  Dialog-frame:title = ttCustomerUpd.Name.
     wait-for go of frame {&FRAME-NAME}.
 end.
 run disable_UI.
@@ -496,6 +497,7 @@ PROCEDURE FormatField :
     define input parameter hCountry as handle no-undo.
     define variable validFieldList as character no-undo.
     define variable errorMessage   as character no-undo.
+    define variable rawInput       as character no-undo.
 
     validFieldList = replace(validNames, " ", ""). 
 
@@ -509,20 +511,13 @@ PROCEDURE FormatField :
                                                                                 
         when hField:name = "Phone"                      then 
             do:
-                define variable rawPhone    as character no-undo.
-                define variable phoneNumber as integer   no-undo.
-                rawPhone = hField:screen-value.
-                rawPhone = replace(rawPhone, "-", "").
-                phoneNumber = integer(rawPhone) no-error.
-                if error-status:error then errorMessage = substitute("The field &1 only takes digists.", hfield:name).
-                else hField:screen-value = rawPhone.
-                                                                        
+                if FormatPhone(hField) <> "INVALID" then hField:screen-value = FormatPhone(hField).
+                else errorMessage = substitute("&1 must contain only digits", hField:name).                                                        
             end. 
         when hField:name = "Country"                then 
             do:
-                define variable rawCountry as character no-undo.
-                rawCountry = hField:screen-value.
-                if rawCountry = "USA" then 
+                rawInput = hField:screen-value.
+                if rawInput = "USA" then 
                 do:
                     isUsa = true.
                     apply "value-changed" to ttCustomerUpd.Country in frame Dialog-Frame.
@@ -532,38 +527,30 @@ PROCEDURE FormatField :
                     isUsa = false.
                     apply "value-changed" to ttCustomerUpd.Country in frame Dialog-Frame.
                 end.
-                hField:screen-value = FormattedCountry(input rawCountry). 
+                hField:screen-value = FormattedCountry(input rawInput). 
             end.  
         when hField:name = "EmailAddress"                  then 
             do: 
-                                                               
-                define variable rawEmail   as character no-undo.
-                define variable labelEmail as character no-undo.
-                define variable emailError as character no-undo.
-                                                        
-                labelEmail = hField:name.
-                rawEmail= hField:screen-value.
-                hField:screen-value = ValidateEmail(rawEmail,labelEmail).
+                if ValidateEmail(hField) <> "INVALID"      then  hField:screen-value = ValidateEmail(hField).
+                else errorMessage = substitute("&1 Shoud be valid email.", hfield:name).
             end.
         when hField:name =  "PostalCode" and hCountry:screen-value = "Netherlands" then 
             do:
-                define variable rawPostalCode  as character no-undo.
                 define variable formatedPostal as character no-undo.
-                rawPostalCode = hField:screen-value.
-                formatedPostal = ValidatePostalCode(rawPostalCode).
+                rawInput = hField:screen-value.
+                formatedPostal = ValidatePostalCode(rawInput).
                 if formatedPostal <> "UNKNOWN" then
                     hField:screen-value = formatedPostal.
-                else errorMessage = substitute("&1 is not a valid Dutch postal code.", rawPostalCode).
+                else errorMessage = substitute("&1 is not a valid Dutch postal code.", rawInput).
                                                                 
             end.   
         when hfield:screen-value <> "" and (hField:name <> "Phone" and hField:name <> "PostalCode"  and hField:name <> "EmailAddress") then 
             do:
-                define variable rawRequiredInput      as character no-undo.
                 define variable FormatedRequiredInput as character no-undo.
                 define variable labelField            as character no-undo.
                 labelField = hField:name.
-                rawRequiredInput = hField:screen-value.
-                FormatedRequiredInput = ValidateTextFields(rawRequiredInput,labelField, hCountry ).
+                rawInput = hField:screen-value.
+                FormatedRequiredInput = ValidateTextFields(hField, hCountry ).
                 case true:
                     when FormatedRequiredInput = "INVALID NAME" then 
                         errorMessage = "Wrong name format, you should provide name and last name".
@@ -601,6 +588,7 @@ PROCEDURE InitializeObjects :
                  Notes:
                 ------------------------------------------------------------------------------*/
     run GetStates in ghDataUtil(output table ttState).
+    
     do with frame {&frame-name}:
         ttCustomerUpd.State:delimiter=";".
         for each ttState:
@@ -617,6 +605,7 @@ PROCEDURE InitializeObjects :
         do:                              
             find first ttCustomerUpd.
         end.
+        
     end.   
     else
         if pcMode = "New" then
@@ -636,7 +625,6 @@ PROCEDURE ReopenQuery :
          Notes:
         ------------------------------------------------------------------------------*/
     {&OPEN-QUERY-Dialog-Frame}
-
 end procedure.
 
 /* _UIB-CODE-BLOCK-END */
@@ -690,18 +678,18 @@ end function.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION FormatPhone Dialog-Frame 
 FUNCTION FormatPhone returns character
-    ( inputPhone as character ):
+    ( hField as handle ):
     /*------------------------------------------------------------------------------
      Purpose:
      Notes:
     ------------------------------------------------------------------------------*/
     define variable result as character no-undo.
-    define variable i      as integer   no-undo.
-    do i = 1 to length(inputPhone) by 4:
-        result = result + SUBSTRING( inputPhone, i, 4) + "-".                                           
-    end.
-    /* Remove the trailing hyphen */
-    result = substring(result, 1, length(result) - 1).
+    define variable phoneNumber as integer no-undo.
+   result = hField:screen-value.
+   result = replace(result, "-", "").
+    phoneNumber = integer(result) no-error.
+    if error-status:error then result = "INVALID".
+    else result = result.
 
     return result.
 
@@ -733,21 +721,23 @@ end function.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidateEmail Dialog-Frame 
 FUNCTION ValidateEmail returns character
-    ( input email as character, input labelEmail as character):
+    ( input hEmail as handle):
     /*------------------------------------------------------------------------------
      Purpose:
      Notes:
     ------------------------------------------------------------------------------*/
     define variable result         as character no-undo.
     define variable formattedEmail as character no-undo.
-    define variable errorMessage   as character no-undo.
-    formattedEmail = LOWER(replace(email, " ", "")).
+    
+    formattedEmail = LOWER(replace(hEmail:screen-value, " ", "")).
     if index(formattedEmail, "@") = 0 or INDEX(formattedEmail, ".") <= INDEX(formattedEmail, "@") then
     do:
-        errorMessage =  substitute("&1 Shoud be valid email.", labelEmail).
-
-        message errorMessage
-            view-as alert-box.        
+        
+        result = "INVALID".
+/*        errorMessage =  substitute("&1 Shoud be valid email.", hEmail:name).*/
+/*                                                                            */
+/*        message errorMessage                                                */
+/*            view-as alert-box.                                              */      
     end.
     else 
     do:
@@ -801,33 +791,33 @@ end function.
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidateTextFields Dialog-Frame 
 FUNCTION ValidateTextFields returns character
-    ( input rawInput as character, input fieldLabel as character, input hCountry as handle ):
+    ( input hRawInput as handle, input hCountry as handle ):
     /*------------------------------------------------------------------------------
      Purpose:
      Notes:
     ------------------------------------------------------------------------------*/
     define variable formatedInput as character no-undo.
     case true:
-        when fieldLabel = "Name" then 
+        when hRawInput:name = "Name" then 
             do:
                 define variable trimmedInput as character no-undo.
                 define variable formatInput  as character no-undo.
-                trimmedInput = trim(rawInput).
+                trimmedInput = trim(hRawInput:screen-value).
                 formatInput = CapitalizeFirstLetter(trimmedInput, hCountry).
                 if length(formatInput) <= 6 or INDEX(formatInput, " ") = 0 then  return "INVALID NAME".
                 else   formatedInput = formatInput.           
             end.   
-        when fieldLabel = "City" then 
+        when hRawInput:name = "City" then 
             do:
                 define variable CapitalizeCity as character no-undo.
-                CapitalizeCity = CapitalizeFirstLetter(rawInput, hCountry).
+                CapitalizeCity = CapitalizeFirstLetter(hRawInput:screen-value, hCountry).
                 if length(CapitalizeCity) < 3 then return "INVALID CITY".
                 else formatedInput = CapitalizeCity.
             end.  
-        when fieldLabel = "Address" then 
+        when hRawInput:name = "Address" then 
             do:
-                if length(rawInput) <= 9 or index(rawInput, " ") = 0 then return "INVALID ADDRESS".
-                else formatedInput = CapitalizeFirstLetter(rawInput, hCountry).
+                if length(hRawInput:screen-value) <= 9 or index(hRawInput:screen-value, " ") = 0 then return "INVALID ADDRESS".
+                else formatedInput = CapitalizeFirstLetter(hRawInput:screen-value, hCountry).
             end.                                                         
     end case.    
 
