@@ -374,11 +374,12 @@ on leave of ttCustomerUpd.Name,ttCustomerUpd.Phone, ttCustomerUpd.Country,ttCust
         ghField = self.
         ghCountryField = ttCustomerUpd.Country:handle.
         run FormatField(ghField, ghCountryField).
-        if return-value = "Error" then 
-        do:
-            apply "entry" to self.
-            return no-apply.
-        end.
+        catch e as Progress.Lang.Error :
+              message e:GetMessage(1)
+                view-as alert-box. 
+              apply "entry" to self.
+              return no-apply.
+        end catch.
     
     end.
 
@@ -546,27 +547,7 @@ PROCEDURE FormatField :
             end.   
         when hfield:screen-value <> "" and (hField:name <> "Phone" and hField:name <> "PostalCode"  and hField:name <> "EmailAddress") then 
             do:
-                define variable FormatedRequiredInput as character no-undo.
-                define variable labelField            as character no-undo.
-                labelField = hField:name.
-                rawInput = hField:screen-value.
-                FormatedRequiredInput = ValidateTextFields(hField, hCountry ).
-                case true:
-                    when FormatedRequiredInput = "INVALID NAME" then 
-                        errorMessage = "Wrong name format, you should provide name and last name".
-                    when FormatedRequiredInput = "INVALID CITY" then 
-                        errorMessage = "The City should exist!".
-                    when FormatedRequiredInput = "INVALID ADDRESS" then 
-                        errorMessage = "Not a valid Address".   
-                end case. 
-             
-                if errorMessage > "" then 
-                do: 
-                    message errorMessage
-                        view-as alert-box.
-                    return "error".
-                end.
-                else  hfield:screen-value =  FormatedRequiredInput.
+                hfield:screen-value = ValidateTextFields(hField, hCountry ).
             end.                                                                                                                                                            
     end case. 
                                                             
@@ -804,20 +785,23 @@ FUNCTION ValidateTextFields returns character
                 define variable formatInput  as character no-undo.
                 trimmedInput = trim(hRawInput:screen-value).
                 formatInput = CapitalizeFirstLetter(trimmedInput, hCountry).
-                if length(formatInput) <= 6 or INDEX(formatInput, " ") = 0 then  return "INVALID NAME".
-                else   formatedInput = formatInput.           
+                if length(formatInput) <= 6 or INDEX(formatInput, " ") = 0 then  
+                undo, throw new Progress.Lang.AppError("Wrong name format, you should provide name and last name",1).
+                formatedInput = formatInput.           
             end.   
         when hRawInput:name = "City" then 
             do:
                 define variable CapitalizeCity as character no-undo.
                 CapitalizeCity = CapitalizeFirstLetter(hRawInput:screen-value, hCountry).
-                if length(CapitalizeCity) < 3 then return "INVALID CITY".
-                else formatedInput = CapitalizeCity.
+                if length(CapitalizeCity) < 3 then
+                    undo, throw new Progress.Lang.AppError("The City should exist!",1).
+                formatedInput = CapitalizeCity.
             end.  
         when hRawInput:name = "Address" then 
             do:
-                if length(hRawInput:screen-value) <= 9 or index(hRawInput:screen-value, " ") = 0 then return "INVALID ADDRESS".
-                else formatedInput = CapitalizeFirstLetter(hRawInput:screen-value, hCountry).
+                if length(hRawInput:screen-value) <= 9 or index(hRawInput:screen-value, " ") = 0 then
+                    undo, throw new Progress.Lang.AppError("Not a valid Address",1).
+                formatedInput = CapitalizeFirstLetter(hRawInput:screen-value, hCountry).
             end.                                                         
     end case.    
 
