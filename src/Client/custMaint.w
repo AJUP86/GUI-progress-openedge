@@ -391,6 +391,8 @@ on leave of ttCustomerUpd.Name,ttCustomerUpd.Phone, ttCustomerUpd.Country,ttCust
         ghCountryField = ttCustomerUpd.Country:handle.
         run FormatField(ghField, ghCountryField).
         catch e as Progress.Lang.AppError :
+            message "hit"
+            view-as alert-box.
               message e:GetMessage(1)
                 view-as alert-box. 
               apply "entry" to self.
@@ -666,9 +668,9 @@ FUNCTION DefineError returns Progress.Lang.AppError
      Purpose:
      Notes:
     ------------------------------------------------------------------------------*/
-    define variable err as Progress.Lang.AppError no-undo.
-    define variable result as Progress.Lang.AppError no-undo.
-    err = new Progress.Lang.AppError(). 
+    define variable err as AppError no-undo.
+    define variable result as AppError no-undo.
+    err = new AppError(). 
     err:AddMessage(eMEssage, 1).
     result = err.
     return result.
@@ -694,7 +696,7 @@ FUNCTION FormatPhone returns character
     if error-status:error then 
         do:
             eMessage = substitute("&1 must contain only digits", hField:name).
-            undo, throw DefineError(eMessage).
+           undo, throw DefineError(eMessage).
         end.
     
     return result.
@@ -734,10 +736,13 @@ FUNCTION ValidateEmail returns character
     ------------------------------------------------------------------------------*/
     define variable result         as character no-undo.
     define variable formattedEmail as character no-undo.
+    define variable eMessage       as character no-undo.
     
     formattedEmail = LOWER(replace(hEmail:screen-value, " ", "")).
-    if index(formattedEmail, "@") = 0 or INDEX(formattedEmail, ".") <= INDEX(formattedEmail, "@") then 
-        undo, throw new Progress.Lang.AppError(substitute("&1 Shoud be valid email.", hEmail:name)).
+    if index(formattedEmail, "@") = 0 or INDEX(formattedEmail, ".") <= INDEX(formattedEmail, "@") then do:
+        eMessage = substitute("&1 Shoud be valid email.", hEmail:name).
+        undo, throw DefineError(eMessage).
+        end.
     result = formattedEmail.
     return result.
 
