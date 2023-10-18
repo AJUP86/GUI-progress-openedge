@@ -391,8 +391,6 @@ on leave of ttCustomerUpd.Name,ttCustomerUpd.Phone, ttCustomerUpd.Country,ttCust
         ghCountryField = ttCustomerUpd.Country:handle.
         run FormatField(ghField, ghCountryField).
         catch e as Progress.Lang.AppError :
-            message "hit"
-            view-as alert-box.
               message e:GetMessage(1)
                 view-as alert-box. 
               apply "entry" to self.
