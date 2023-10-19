@@ -17,7 +17,7 @@ block-level on error undo, throw.
 
 
 /* Temp-Table and Buffer definitions                                    */
-define temp-table ttCustomerUpd no-undo like Customer
+DEFINE TEMP-TABLE ttCustomerUpd NO-UNDO LIKE Customer
        field rowIdent as rowid index rowdIdent rowIdent.
 
 
@@ -125,50 +125,50 @@ ttCustomerUpd.CustNum
 /* ************************  Function Prototypes ********************** */
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD CapitalizeFirstLetter Dialog-Frame 
-function CapitalizeFirstLetter returns character
-    ( input pString as character, input hCountry as handle ) forward.
+FUNCTION CapitalizeFirstLetter returns character
+    ( input pString as character, input hCountry as handle ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD DefineError Dialog-Frame 
-function DefineError returns Progress.Lang.AppError
-  (  eMessage as character ) forward.
+FUNCTION DefineError returns Progress.Lang.AppError
+  (  eMessage as character ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD FormatPhone Dialog-Frame 
-function FormatPhone returns character
-    ( hField as handle ) forward.
+FUNCTION FormatPhone returns character
+    ( hField as handle ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD FormattedCountry Dialog-Frame 
-function FormattedCountry returns character
-    (rawCountry as character ) forward.
+FUNCTION FormattedCountry returns character
+    (rawCountry as character ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidateEmail Dialog-Frame 
-function ValidateEmail returns character
-    ( input hEmail as handle) forward.
+FUNCTION ValidateEmail returns character
+    ( input hEmail as handle) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidatePostalCode Dialog-Frame 
-function ValidatePostalCode returns character
-    ( input rawPostal as character ) forward.
+FUNCTION ValidatePostalCode returns character
+    ( input rawPostal as character ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION-FORWARD ValidateTextFields Dialog-Frame 
-function ValidateTextFields returns character
-    ( input hRawInput as handle, input hCountry as handle ) forward.
+FUNCTION ValidateTextFields returns character
+    ( input hRawInput as handle, input hCountry as handle ) FORWARD.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
@@ -179,88 +179,88 @@ function ValidateTextFields returns character
 /* Define a dialog box                                                  */
 
 /* Definitions of the field level widgets                               */
-define button Btn_Cancel auto-end-key 
-     label "Cancel" 
-     size 15 by 1.13
-     bgcolor 8 .
+DEFINE BUTTON Btn_Cancel AUTO-END-KEY 
+     LABEL "Cancel" 
+     SIZE 15 BY 1.13
+     BGCOLOR 8 .
 
-define button Btn_Save auto-go 
-     label "Save" 
-     size 15 by 1.13
-     bgcolor 8 .
+DEFINE BUTTON Btn_Save AUTO-GO 
+     LABEL "Save" 
+     SIZE 15 BY 1.13
+     BGCOLOR 8 .
 
 /* Query definitions                                                    */
 &ANALYZE-SUSPEND
-define query Dialog-Frame for 
-      ttCustomerUpd scrolling.
+DEFINE QUERY Dialog-Frame FOR 
+      ttCustomerUpd SCROLLING.
 &ANALYZE-RESUME
 
 /* ************************  Frame Definitions  *********************** */
 
-define frame Dialog-Frame
-     ttCustomerUpd.Contact at row 2.03 col 64 colon-aligned widget-id 12
-          view-as fill-in 
-          size 22 by 1 no-tab-stop 
-     Btn_Save at row 2.03 col 91 no-tab-stop 
-     ttCustomerUpd.Name at row 3.31 col 14 colon-aligned widget-id 24
-          view-as fill-in 
-          size 31.2 by 1
-          bgcolor 14 
-     ttCustomerUpd.Phone at row 3.31 col 64 colon-aligned widget-id 26
-          view-as fill-in 
-          size 21.2 by 1
-          bgcolor 14 
-     Btn_Cancel at row 3.31 col 91
-     ttCustomerUpd.Country at row 4.59 col 14 colon-aligned widget-id 14
-          view-as fill-in 
-          size 21.2 by 1
-          bgcolor 14 
-     ttCustomerUpd.EmailAddress at row 4.59 col 64 colon-aligned widget-id 22
-          view-as fill-in 
-          size 24 by 1
-          bgcolor 14 
-     ttCustomerUpd.PostalCode at row 5.87 col 14 colon-aligned widget-id 28
-          view-as fill-in 
-          size 14.5 by 1
-          bgcolor 14 
-     ttCustomerUpd.SalesRep at row 7.15 col 64 colon-aligned widget-id 30
-          view-as fill-in 
-          size 8.5 by 1
-     ttCustomerUpd.City at row 8 col 14 colon-aligned widget-id 8
-          view-as fill-in 
-          size 26.2 by 1
-          bgcolor 14 
-     ttCustomerUpd.Discount at row 8.44 col 64 colon-aligned widget-id 20
-          view-as fill-in 
-          size 6.4 by 1
-     ttCustomerUpd.State at row 9.21 col 14 colon-aligned widget-id 34
-          view-as combo-box inner-lines 5
-          list-item-pairs "None","None",
+DEFINE FRAME Dialog-Frame
+     ttCustomerUpd.Contact AT ROW 2.03 COL 64 COLON-ALIGNED WIDGET-ID 12
+          VIEW-AS FILL-IN 
+          SIZE 22 BY 1 NO-TAB-STOP 
+     Btn_Save AT ROW 2.03 COL 91 NO-TAB-STOP 
+     ttCustomerUpd.Name AT ROW 3.31 COL 14 COLON-ALIGNED WIDGET-ID 24
+          VIEW-AS FILL-IN 
+          SIZE 31.2 BY 1
+          BGCOLOR 14 
+     ttCustomerUpd.Phone AT ROW 3.31 COL 64 COLON-ALIGNED WIDGET-ID 26
+          VIEW-AS FILL-IN 
+          SIZE 21.2 BY 1
+          BGCOLOR 14 
+     Btn_Cancel AT ROW 3.31 COL 91
+     ttCustomerUpd.Country AT ROW 4.59 COL 14 COLON-ALIGNED WIDGET-ID 14
+          VIEW-AS FILL-IN 
+          SIZE 21.2 BY 1
+          BGCOLOR 14 
+     ttCustomerUpd.EmailAddress AT ROW 4.59 COL 64 COLON-ALIGNED WIDGET-ID 22
+          VIEW-AS FILL-IN 
+          SIZE 24 BY 1
+          BGCOLOR 14 
+     ttCustomerUpd.PostalCode AT ROW 5.87 COL 14 COLON-ALIGNED WIDGET-ID 28
+          VIEW-AS FILL-IN 
+          SIZE 14.5 BY 1
+          BGCOLOR 14 
+     ttCustomerUpd.SalesRep AT ROW 7.15 COL 64 COLON-ALIGNED WIDGET-ID 30
+          VIEW-AS FILL-IN 
+          SIZE 8.5 BY 1
+     ttCustomerUpd.City AT ROW 8 COL 14 COLON-ALIGNED WIDGET-ID 8
+          VIEW-AS FILL-IN 
+          SIZE 26.2 BY 1
+          BGCOLOR 14 
+     ttCustomerUpd.Discount AT ROW 8.44 COL 64 COLON-ALIGNED WIDGET-ID 20
+          VIEW-AS FILL-IN 
+          SIZE 6.4 BY 1
+     ttCustomerUpd.State AT ROW 9.21 COL 14 COLON-ALIGNED WIDGET-ID 34
+          VIEW-AS COMBO-BOX INNER-LINES 5
+          LIST-ITEM-PAIRS "None","None",
                      "Web","Web"
-          drop-down-list
-          size 16 by 1
-     ttCustomerUpd.CreditLimit at row 9.72 col 64 colon-aligned widget-id 16
-          view-as fill-in 
-          size 14.2 by 1
-     ttCustomerUpd.Address at row 10.49 col 14 colon-aligned widget-id 2
-          view-as fill-in 
-          size 36.2 by 1
-          bgcolor 14 
-     ttCustomerUpd.Address2 at row 11.77 col 14 colon-aligned widget-id 4
-          view-as fill-in 
-          size 36.2 by 1
-     ttCustomerUpd.Comments at row 14.08 col 14 colon-aligned widget-id 10
-          view-as fill-in 
-          size 81.2 by 1
-     ttCustomerUpd.CustNum at row 2.03 col 14 colon-aligned widget-id 18
-           view-as text 
-          size 7.7 by .64
-          fgcolor 9 
-     space(83.29) skip(13.68)
-    with view-as dialog-box keep-tab-order 
-         side-labels no-underline three-d  scrollable 
-         title "<insert dialog title>"
-         default-button Btn_Save cancel-button Btn_Cancel widget-id 100.
+          DROP-DOWN-LIST
+          SIZE 16 BY 1
+     ttCustomerUpd.CreditLimit AT ROW 9.72 COL 64 COLON-ALIGNED WIDGET-ID 16
+          VIEW-AS FILL-IN 
+          SIZE 14.2 BY 1
+     ttCustomerUpd.Address AT ROW 10.49 COL 14 COLON-ALIGNED WIDGET-ID 2
+          VIEW-AS FILL-IN 
+          SIZE 36.2 BY 1
+          BGCOLOR 14 
+     ttCustomerUpd.Address2 AT ROW 11.77 COL 14 COLON-ALIGNED WIDGET-ID 4
+          VIEW-AS FILL-IN 
+          SIZE 36.2 BY 1
+     ttCustomerUpd.Comments AT ROW 14.08 COL 14 COLON-ALIGNED WIDGET-ID 10
+          VIEW-AS FILL-IN 
+          SIZE 81.2 BY 1
+     ttCustomerUpd.CustNum AT ROW 2.03 COL 14 COLON-ALIGNED WIDGET-ID 18
+           VIEW-AS TEXT 
+          SIZE 7.7 BY .64
+          FGCOLOR 9 
+     SPACE(83.29) SKIP(13.68)
+    WITH VIEW-AS DIALOG-BOX KEEP-TAB-ORDER 
+         SIDE-LABELS NO-UNDERLINE THREE-D  SCROLLABLE 
+         TITLE "<insert dialog title>"
+         DEFAULT-BUTTON Btn_Save CANCEL-BUTTON Btn_Cancel WIDGET-ID 100.
 
 
 /* *********************** Procedure Settings ************************ */
@@ -286,14 +286,14 @@ define frame Dialog-Frame
 &ANALYZE-SUSPEND _RUN-TIME-ATTRIBUTES
 /* SETTINGS FOR DIALOG-BOX Dialog-Frame
    FRAME-NAME                                                           */
-assign 
-       frame Dialog-Frame:SCROLLABLE       = false
-       frame Dialog-Frame:HIDDEN           = true.
+ASSIGN 
+       FRAME Dialog-Frame:SCROLLABLE       = FALSE
+       FRAME Dialog-Frame:HIDDEN           = TRUE.
 
 /* SETTINGS FOR FILL-IN ttCustomerUpd.CustNum IN FRAME Dialog-Frame
    NO-ENABLE                                                            */
-assign 
-       ttCustomerUpd.CustNum:READ-ONLY in frame Dialog-Frame        = true.
+ASSIGN 
+       ttCustomerUpd.CustNum:READ-ONLY IN FRAME Dialog-Frame        = TRUE.
 
 /* SETTINGS FOR COMBO-BOX ttCustomerUpd.State IN FRAME Dialog-Frame
    NO-ENABLE                                                            */
@@ -319,7 +319,7 @@ assign
 
 &Scoped-define SELF-NAME Dialog-Frame
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Dialog-Frame Dialog-Frame
-on window-close of frame Dialog-Frame /* <insert dialog title> */
+ON window-close OF FRAME Dialog-Frame /* <insert dialog title> */
 do:
         apply "END-ERROR":U to self.
     end.
@@ -330,7 +330,7 @@ do:
 
 &Scoped-define SELF-NAME Btn_Save
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL Btn_Save Dialog-Frame
-on choose of Btn_Save in frame Dialog-Frame /* Save */
+ON choose OF Btn_Save IN FRAME Dialog-Frame /* Save */
 do:
     define variable hFieldName    as handle no-undo.
     define variable hFieldPhone   as handle no-undo.
@@ -408,7 +408,7 @@ on leave of ttCustomerUpd.Name,ttCustomerUpd.Phone, ttCustomerUpd.Country,ttCust
 
 &Scoped-define SELF-NAME ttCustomerUpd.Country
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _CONTROL ttCustomerUpd.Country Dialog-Frame
-on value-changed of ttCustomerUpd.Country in frame Dialog-Frame /* Country */
+ON value-changed OF ttCustomerUpd.Country IN FRAME Dialog-Frame /* Country */
 do:
         if  isUSA = true then
         do with frame {&frame-name}:
@@ -456,7 +456,7 @@ run disable_UI.
 /* **********************  Internal Procedures  *********************** */
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE disable_UI Dialog-Frame  _DEFAULT-DISABLE
-procedure disable_UI :
+PROCEDURE disable_UI :
 /*------------------------------------------------------------------------------
   Purpose:     DISABLE the User Interface
   Parameters:  <none>
@@ -466,14 +466,14 @@ procedure disable_UI :
                we are ready to "clean-up" after running.
 ------------------------------------------------------------------------------*/
   /* Hide all frames. */
-  hide frame Dialog-Frame.
-end procedure.
+  HIDE FRAME Dialog-Frame.
+END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE enable_UI Dialog-Frame  _DEFAULT-ENABLE
-procedure enable_UI :
+PROCEDURE enable_UI :
 /*------------------------------------------------------------------------------
   Purpose:     ENABLE the User Interface
   Parameters:  <none>
@@ -485,30 +485,30 @@ procedure enable_UI :
 ------------------------------------------------------------------------------*/
 
   {&OPEN-QUERY-Dialog-Frame}
-  get first Dialog-Frame.
-  if available ttCustomerUpd then 
-    display ttCustomerUpd.Contact ttCustomerUpd.Name ttCustomerUpd.Phone 
+  GET FIRST Dialog-Frame.
+  IF AVAILABLE ttCustomerUpd THEN 
+    DISPLAY ttCustomerUpd.Contact ttCustomerUpd.Name ttCustomerUpd.Phone 
           ttCustomerUpd.Country ttCustomerUpd.EmailAddress 
           ttCustomerUpd.PostalCode ttCustomerUpd.SalesRep ttCustomerUpd.City 
           ttCustomerUpd.Discount ttCustomerUpd.State ttCustomerUpd.CreditLimit 
           ttCustomerUpd.Address ttCustomerUpd.Address2 ttCustomerUpd.Comments 
           ttCustomerUpd.CustNum 
-      with frame Dialog-Frame.
-  enable ttCustomerUpd.Contact Btn_Save ttCustomerUpd.Name ttCustomerUpd.Phone 
+      WITH FRAME Dialog-Frame.
+  ENABLE ttCustomerUpd.Contact Btn_Save ttCustomerUpd.Name ttCustomerUpd.Phone 
          Btn_Cancel ttCustomerUpd.Country ttCustomerUpd.EmailAddress 
          ttCustomerUpd.PostalCode ttCustomerUpd.SalesRep ttCustomerUpd.City 
          ttCustomerUpd.Discount ttCustomerUpd.CreditLimit ttCustomerUpd.Address 
          ttCustomerUpd.Address2 ttCustomerUpd.Comments 
-      with frame Dialog-Frame.
-  view frame Dialog-Frame.
+      WITH FRAME Dialog-Frame.
+  VIEW FRAME Dialog-Frame.
   {&OPEN-BROWSERS-IN-QUERY-Dialog-Frame}
-end procedure.
+END PROCEDURE.
 
 /* _UIB-CODE-BLOCK-END */
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE FormatField Dialog-Frame 
-procedure FormatField :
+PROCEDURE FormatField :
 /*------------------------------------------------------------------------------
      Purpose:
      Notes:
@@ -569,7 +569,7 @@ end procedure.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE InitializeObjects Dialog-Frame 
-procedure InitializeObjects :
+PROCEDURE InitializeObjects :
 /*------------------------------------------------------------------------------
                  Purpose:
                  Notes:
@@ -606,7 +606,7 @@ end procedure.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _PROCEDURE ReopenQuery Dialog-Frame 
-procedure ReopenQuery :
+PROCEDURE ReopenQuery :
 /*------------------------------------------------------------------------------
          Purpose:
          Notes:
@@ -620,7 +620,7 @@ end procedure.
 /* ************************  Function Implementations ***************** */
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION CapitalizeFirstLetter Dialog-Frame 
-function CapitalizeFirstLetter returns character
+FUNCTION CapitalizeFirstLetter returns character
     ( input pString as character, input hCountry as handle ):
     /*------------------------------------------------------------------------------
      Purpose:
@@ -664,7 +664,7 @@ end function.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION DefineError Dialog-Frame 
-function DefineError returns Progress.Lang.AppError
+FUNCTION DefineError returns Progress.Lang.AppError
   (  eMessage as character ):
     /*------------------------------------------------------------------------------
      Purpose:
@@ -691,7 +691,7 @@ end function.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION FormatPhone Dialog-Frame 
-function FormatPhone returns character
+FUNCTION FormatPhone returns character
     ( hField as handle ):
     /*------------------------------------------------------------------------------
      Purpose:
@@ -717,7 +717,7 @@ end function.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION FormattedCountry Dialog-Frame 
-function FormattedCountry returns character
+FUNCTION FormattedCountry returns character
     (rawCountry as character ):
     /*------------------------------------------------------------------------------
      Purpose:
@@ -738,7 +738,7 @@ end function.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidateEmail Dialog-Frame 
-function ValidateEmail returns character
+FUNCTION ValidateEmail returns character
     ( input hEmail as handle):
     /*------------------------------------------------------------------------------
      Purpose:
@@ -762,7 +762,7 @@ end function.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidatePostalCode Dialog-Frame 
-function ValidatePostalCode returns character
+FUNCTION ValidatePostalCode returns character
     ( input rawPostal as character ):
     /*------------------------------------------------------------------------------
      Purpose:
@@ -809,7 +809,7 @@ end function.
 &ANALYZE-RESUME
 
 &ANALYZE-SUSPEND _UIB-CODE-BLOCK _FUNCTION ValidateTextFields Dialog-Frame 
-function ValidateTextFields returns character
+FUNCTION ValidateTextFields returns character
     ( input hRawInput as handle, input hCountry as handle ):
     /*------------------------------------------------------------------------------
      Purpose:
