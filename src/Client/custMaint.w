@@ -392,8 +392,6 @@ on leave of ttCustomerUpd.Name,ttCustomerUpd.Phone, ttCustomerUpd.Country,ttCust
         ghCountryField = ttCustomerUpd.Country:handle.
         run FormatField(ghField, ghCountryField).
         catch e as Progress.Lang.AppError :
-            message "hit"
-            view-as alert-box.
               message e:GetMessage(1)
                 view-as alert-box. 
               apply "entry" to self.
@@ -520,8 +518,6 @@ procedure FormatField :
     define variable errorMess as character no-undo.
 
     validFieldList = replace(validNames, " ", ""). 
-    message 
-    view-as alert-box.
     case true:
         when not valid-handle(hField)                   then 
             undo, throw new Progress.Lang.AppError("no valid").
